@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
+const base = process.env.REACT_APP_BASE;
 
-import './App.css';
-
-const socket = io('http://localhost:5000', {
+const socket = io(base, {
   transports: ['websocket'],
 });
 

@@ -1,16 +1,10 @@
-// server/index.js
 const express = require('express');
 const http = require('http');
-const socketIO = require('socket.io');
+const socketIO = require('socket.io'); 
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server, {
-  cors: {
-    origin: 'http://localhost:3001',
-    methods: ['GET', 'POST'],
-  },
-});
+const io = socketIO(server,); // we candefine the cors here also
 
 const usersInDocument = {};
 const documents = {};
@@ -20,6 +14,7 @@ io.on('connection', (socket) => {
 
   socket.on('updateUser', ({username, documentId}) => {
     if (documentId) {
+      socket.username = username;
       usersInDocument[documentId] = usersInDocument[documentId] || [];
       usersInDocument[documentId].push(username);
       updateUsersList(documentId);
@@ -49,18 +44,18 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('disconnect', (id) => {
-    console.log('A user disconnected');
-
-    // const documentId = Object.keys(socket.rooms)[1]; // Assuming the documentId is the second room
-    // if (documentId) {
-    //   usersInDocument[documentId] = usersInDocument[documentId] || [];
-    //   const index = usersInDocument[documentId].indexOf(socket.myname);
-    //   if (index !== -1) {
-    //     usersInDocument[documentId].splice(index, 1);
-    //     updateUsersList(documentId);
-    //   }
-    // }
+  socket.on('disconnect', () => {
+    let documentId = null;
+    for (const [docId, users] of Object.entries(usersInDocument)) {
+      const index = users.indexOf(socket.username);
+      if (index !== -1) {
+        documentId = docId;
+        users.splice(index, 1); 
+        updateUsersList(documentId);
+        break;
+      }
+    }
+    console.log(`User disconnected from document ${documentId}`);
   });
 
   function updateUsersList(documentId) {
