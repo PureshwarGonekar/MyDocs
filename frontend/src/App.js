@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
-const base = process.env.REACT_APP_BASE || 'https://my-doc-backend.glitch.me/';
+const base = process.env.REACT_APP_BASE || 'https://my-docs-backend.vercel.app/';
 
 const socket = io(base, {
   transports: ['websocket'],
@@ -15,7 +15,7 @@ function App() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [documentId, setDocumentId] = useState('');
 
-  console.log("onlineUsers",onlineUsers)
+  // console.log("onlineUsers",onlineUsers)
 
   useEffect(() => {
     if (myname) {
